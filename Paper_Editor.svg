@@ -1,0 +1,2406 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%">
+<title>Paper Editor</title>
+<style type="text/css"><![CDATA[
+@import url('https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,500;0,600;0,700;1,400;1,600&family=JetBrains+Mono:wght@400;500&display=swap');
+@import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css');
+  * { margin: 0; padding: 0; box-sizing: border-box; border-radius: 0 !important; }
+
+  :root {
+    --paper: #f3ead9;
+    --paper-panel: #faf5e9;
+    --paper-panel-alt: #efe4c9;
+    --ink: #2f2a22;
+    --ink-soft: #5b5343;
+    --ink-faint: #9a8f76;
+    --border: #cdbe98;
+    --border-strong: #a8935f;
+
+    --accent: #b5502f;
+    --accent-soft: #ecd6c2;
+    --accent-hover: #963f24;
+
+    --accent-blue: #3d6b96;
+    --accent-blue-hover: #2f5578;
+    --accent-teal: #3f7d69;
+    --accent-teal-hover: #316354;
+    --accent-mustard: #c48a2e;
+    --accent-mustard-hover: #a37124;
+
+    --good: #5c7a52;
+    --warn: #c48a2e;
+    --danger: #a83232;
+    --danger-hover: #8a2727;
+
+    --shadow-sm: 3px 3px 0 rgba(47,42,34,0.16);
+    --shadow-md: 6px 6px 0 rgba(47,42,34,0.16);
+    --shadow-lg: 9px 9px 0 rgba(47,42,34,0.18);
+    --font-body: 'Lora', Georgia, 'Times New Roman', serif;
+    --font-mono: 'JetBrains Mono', 'Fira Code', Consolas, monospace;
+  }
+
+  :root.dark {
+    --paper: #17140f;
+    --paper-panel: #201c15;
+    --paper-panel-alt: #2a2419;
+    --ink: #ece3ce;
+    --ink-soft: #b5a98d;
+    --ink-faint: #7c715a;
+    --border: #453b28;
+    --border-strong: #6b5a37;
+
+    --accent: #d97b53;
+    --accent-soft: #4a3325;
+    --accent-hover: #c1673f;
+
+    --accent-blue: #6f9ec9;
+    --accent-blue-hover: #5786b3;
+    --accent-teal: #63ab8f;
+    --accent-teal-hover: #4f9179;
+    --accent-mustard: #dba53f;
+    --accent-mustard-hover: #c18f2f;
+
+    --good: #83a873;
+    --warn: #dba53f;
+    --danger: #cc5c5c;
+    --danger-hover: #b34b4b;
+  }
+
+  #app {
+    height: 100%;
+    background: var(--paper);
+    background-image: radial-gradient(var(--border) 1px, transparent 1px);
+    background-size: 22px 22px;
+    color: var(--ink);
+    font-family: var(--font-body);
+    overflow: hidden;
+    transition: background-color 0.2s ease, color 0.2s ease;
+  }
+
+  #topbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 54px;
+    padding: 0 18px;
+    background: var(--paper-panel-alt);
+    border-bottom: 4px solid;
+    border-image: linear-gradient(90deg, var(--accent), var(--accent-blue), var(--accent-teal), var(--accent-mustard)) 1;
+    flex-shrink: 0;
+    user-select: none;
+  }
+
+  #topbar .logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 17px;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    color: var(--ink);
+  }
+
+  #topbar .logo .stamp {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 30px; height: 30px;
+    border: 2px solid var(--accent);
+    color: var(--accent);
+    font-size: 15px;
+    background: var(--paper);
+    transform: rotate(-4deg);
+  }
+
+  #topbar .actions {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    padding: 8px 14px;
+    border: 2px solid var(--border-strong);
+    background: var(--paper-panel);
+    color: var(--ink-soft);
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    font-family: var(--font-body);
+    box-shadow: var(--shadow-sm);
+    transition: transform 0.1s ease, box-shadow 0.1s ease, color 0.15s, background 0.15s;
+  }
+
+  .btn:hover {
+    color: var(--ink);
+    transform: translate(-1px, -1px);
+    box-shadow: 5px 5px 0 rgba(47,42,34,0.18);
+  }
+
+  .btn:active {
+    transform: translate(1px, 1px);
+    box-shadow: 1px 1px 0 rgba(47,42,34,0.18);
+  }
+
+  .btn.primary {
+    background: var(--accent);
+    border-color: var(--accent-hover);
+    color: #fbf3ea;
+  }
+  .btn.primary:hover { color: #fff; background: var(--accent-hover); }
+
+  .btn.ghost { background: var(--paper-panel); }
+
+  .btn.accent-blue { border-color: var(--accent-blue); color: var(--accent-blue); }
+  .btn.accent-blue:hover { background: var(--accent-blue); color: #fff; }
+
+  .btn.accent-teal { border-color: var(--accent-teal); color: var(--accent-teal); }
+  .btn.accent-teal:hover { background: var(--accent-teal); color: #fff; }
+
+  .btn.accent-mustard { border-color: var(--accent-mustard); color: var(--accent-mustard); }
+  .btn.accent-mustard:hover { background: var(--accent-mustard); color: #fff; }
+
+  .btn svg, .btn i { flex-shrink: 0; }
+
+  #tabstrip {
+    display: flex;
+    align-items: center;
+    height: 38px;
+    background: var(--paper-panel-alt);
+    border-bottom: 3px solid var(--border-strong);
+    padding: 0 0 0 6px;
+    flex-shrink: 0;
+  }
+
+  .tab {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 0 16px;
+    height: 100%;
+    font-size: 13px;
+    color: var(--ink-soft);
+    border-right: 2px solid var(--border);
+    cursor: default;
+    user-select: none;
+  }
+
+  .tab.active {
+    color: var(--ink);
+    font-weight: 600;
+    background: var(--paper-panel);
+    border-bottom: 3px solid var(--accent);
+    margin-bottom: -3px;
+  }
+
+  .tab .dot {
+    width: 7px; height: 7px;
+    background: var(--warn);
+    display: none;
+  }
+
+  .tab.modified .dot { display: block; }
+
+  #layout {
+    display: flex;
+    position: relative;
+    height: calc(100vh - 92px - 26px);
+  }
+
+  #sticky-layer {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    z-index: 50;
+  }
+
+  #divider {
+    width: 5px;
+    background: var(--border);
+    border-left: 1px solid var(--border-strong);
+    border-right: 1px solid var(--border-strong);
+    cursor: col-resize;
+    flex-shrink: 0;
+    transition: background 0.15s;
+  }
+
+  #divider:hover, #divider.dragging { background: var(--accent); }
+
+  #editor-pane {
+    display: flex;
+    flex-direction: column;
+    width: 50%;
+    min-width: 200px;
+    background: var(--paper-panel);
+    overflow: hidden;
+  }
+
+  #editor-header, #preview-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 14px;
+    height: 36px;
+    background: var(--paper-panel-alt);
+    border-bottom: 2px solid var(--border);
+    flex-shrink: 0;
+  }
+
+  .pane-label {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--ink-soft);
+    font-weight: 600;
+  }
+
+  .pane-status {
+    font-size: 11px;
+    color: var(--ink-faint);
+    font-family: var(--font-mono);
+  }
+
+  #editor-wrap {
+    display: flex;
+    flex: 1;
+    overflow: hidden;
+    position: relative;
+  }
+
+  #line-numbers {
+    width: 46px;
+    min-width: 46px;
+    padding: 14px 0;
+    background: var(--paper-panel-alt);
+    border-right: 2px solid var(--border);
+    text-align: right;
+    overflow: hidden;
+    font-family: var(--font-mono);
+    font-size: 13px;
+    line-height: 1.65;
+    color: var(--ink-faint);
+    user-select: none;
+    flex-shrink: 0;
+  }
+
+  #line-numbers span { display: block; padding-right: 10px; }
+
+  #code {
+    flex: 1;
+    padding: 14px 16px;
+    background: var(--paper-panel);
+    color: var(--ink);
+    border: none;
+    outline: none;
+    resize: none;
+    font-family: var(--font-mono);
+    font-size: 13px;
+    line-height: 1.65;
+    tab-size: 2;
+    white-space: pre;
+    overflow: auto;
+    caret-color: var(--accent);
+  }
+
+  #code::selection { background: var(--accent-soft); }
+  #code::-webkit-scrollbar { width: 9px; height: 9px; }
+  #code::-webkit-scrollbar-track { background: transparent; }
+  #code::-webkit-scrollbar-thumb { background: var(--border-strong); }
+  #code::-webkit-scrollbar-thumb:hover { background: var(--accent); }
+
+  #preview-pane {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    min-width: 200px;
+    background: var(--paper-panel);
+    overflow: hidden;
+    border-left: 1px solid var(--border-strong);
+  }
+
+  #preview-frame { flex: 1; border: none; background: #fff; }
+
+  #statusbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 26px;
+    padding: 0 14px;
+    background: var(--accent);
+    border-top: 2px solid var(--accent-hover);
+    flex-shrink: 0;
+    font-size: 11px;
+    color: #fbf3ea;
+    font-weight: 600;
+    letter-spacing: 0.03em;
+  }
+
+  #statusbar .status-left { display: flex; gap: 16px; }
+  #statusbar .status-right { display: flex; gap: 16px; }
+
+  .modal-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(15, 13, 9, 0.55);
+    z-index: 1000;
+    align-items: center;
+    justify-content: center;
+    padding: 30px;
+  }
+
+  .modal-overlay.open { display: flex; }
+
+  .modal {
+    background: var(--paper-panel);
+    border: 3px solid var(--border-strong);
+    box-shadow: var(--shadow-lg);
+    width: 100%;
+    max-width: 1080px;
+    max-height: 88vh;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+
+  .modal-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 20px;
+    border-bottom: 3px solid var(--border-strong);
+    background: var(--paper-panel-alt);
+    flex-shrink: 0;
+  }
+
+  .modal-header h2 {
+    font-size: 18px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: var(--ink);
+  }
+
+  #gh-modal .modal-header { border-bottom-color: var(--accent-blue); }
+  #gh-modal .modal-header h2, #gh-modal .modal-header h2 i { color: var(--accent-blue); }
+  #conv-modal .modal-header { border-bottom-color: var(--accent-teal); }
+  #conv-modal .modal-header h2, #conv-modal .modal-header h2 i { color: var(--accent-teal); }
+
+  .modal-close {
+    width: 30px; height: 30px;
+    display: flex; align-items: center; justify-content: center;
+    border: 2px solid var(--border-strong);
+    background: var(--paper);
+    color: var(--ink-soft);
+    cursor: pointer;
+    font-size: 15px;
+    box-shadow: var(--shadow-sm);
+  }
+
+  .modal-close:hover { color: var(--accent); border-color: var(--accent); }
+
+  .modal-body { flex: 1; overflow: hidden; display: flex; }
+
+  input[type="text"], input[type="password"], input[type="number"], select, textarea {
+    font-family: var(--font-body);
+    background: var(--paper);
+    border: 2px solid var(--border-strong);
+    color: var(--ink);
+    padding: 9px 11px;
+    font-size: 14px;
+    outline: none;
+  }
+
+  input[type="text"]:focus, input[type="password"]:focus, input[type="number"]:focus, select:focus, textarea:focus {
+    border-color: var(--accent);
+  }
+
+  ::placeholder { color: var(--ink-faint); }
+
+  #gh-sidebar {
+    width: 250px;
+    flex-shrink: 0;
+    background: var(--paper-panel-alt);
+    border-right: 3px solid var(--border-strong);
+    overflow-y: auto;
+    padding: 16px;
+  }
+
+  .filter-section { margin-bottom: 22px; }
+
+  .filter-section h4 {
+    color: var(--accent-blue);
+    margin-bottom: 10px;
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+
+  .filter-option {
+    display: flex;
+    align-items: center;
+    margin-bottom: 8px;
+  }
+
+  .filter-option input[type="checkbox"], .filter-option input[type="radio"] {
+    margin-right: 9px;
+    accent-color: var(--accent-blue);
+    width: 15px; height: 15px;
+  }
+
+  .filter-option label {
+    color: var(--ink-soft);
+    font-size: 13px;
+    cursor: pointer;
+    user-select: none;
+  }
+
+  .lang-grid { display: grid; grid-template-columns: 1fr 1fr; column-gap: 6px; }
+
+  .num-row { display: flex; align-items: center; gap: 8px; }
+  .num-row input { width: 100%; }
+
+  #gh-main {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    padding: 18px 20px;
+  }
+
+  .gh-searchbar { display: flex; gap: 8px; margin-bottom: 14px; flex-shrink: 0; }
+  .gh-searchbar input { flex: 1; }
+
+  #gh-results {
+    flex: 1;
+    overflow-y: auto;
+    border: 2px solid var(--border);
+    background: var(--paper);
+    padding: 14px;
+  }
+
+  .results-info { font-size: 12px; color: var(--ink-faint); margin-bottom: 12px; }
+
+  .repo, .user-item {
+    margin-bottom: 12px;
+    padding: 12px;
+    border: 2px solid var(--border);
+    background: var(--paper-panel);
+  }
+
+  .repo a.repo-title, .user-item a.user-title {
+    font-weight: 700;
+    font-size: 15px;
+    color: var(--accent-blue);
+    text-decoration: none;
+  }
+
+  .repo a.repo-title:hover, .user-item a.user-title:hover { text-decoration: underline; }
+
+  .download-zip-button {
+    margin-left: 8px;
+    font-size: 12px;
+    padding: 5px 9px;
+    border: 2px solid var(--border-strong);
+    background: var(--paper);
+    color: var(--ink-soft);
+    cursor: pointer;
+    box-shadow: var(--shadow-sm);
+  }
+  .download-zip-button:hover { color: var(--accent-blue); border-color: var(--accent-blue); }
+
+  .repo-stats { margin-top: 6px; font-size: 12px; color: var(--ink-faint); }
+  .repo-stats span { margin-right: 14px; }
+
+  .repo p { margin-top: 6px; font-size: 13px; color: var(--ink-soft); }
+  .repo a { color: var(--accent-blue); }
+
+  .files { margin-top: 10px; }
+
+  .file {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 6px;
+    padding: 8px 10px;
+    border: 2px solid var(--border);
+    background: var(--paper);
+  }
+
+  .file-name { flex: 1; color: var(--ink); font-size: 13px; }
+  .file-icons { display: flex; gap: 12px; }
+  .file-icons a { color: var(--ink-soft); text-decoration: none; font-size: 15px; cursor: pointer; }
+  .file-icons a:hover { color: var(--accent-blue); }
+
+  .profile-button {
+    background: var(--paper);
+    color: var(--ink-soft);
+    border: 2px solid var(--border-strong);
+    padding: 5px 10px;
+    font-size: 12px;
+    cursor: pointer;
+    margin-left: 10px;
+    box-shadow: var(--shadow-sm);
+  }
+  .profile-button:hover { color: var(--accent-blue); border-color: var(--accent-blue); }
+
+  .user-details {
+    margin-top: 10px;
+    padding: 12px;
+    border: 2px solid var(--border);
+    background: var(--paper);
+  }
+
+  .user-avatar {
+    width: 64px; height: 64px;
+    float: left;
+    margin-right: 12px;
+    border: 2px solid var(--border-strong);
+  }
+
+  .user-info { overflow: hidden; }
+  .user-info h4 { margin: 0 0 4px 0; color: var(--accent-blue); font-size: 15px; }
+  .user-info p { margin: 3px 0; font-size: 13px; color: var(--ink-soft); }
+  .user-description { font-style: italic; color: var(--ink); margin: 4px 0; }
+
+  .user-stats { clear: both; margin-top: 12px; padding-top: 10px; border-top: 2px solid var(--border); }
+  .user-stats span { display: inline-block; margin-right: 14px; font-size: 12px; color: var(--ink-faint); }
+
+  .user-links { margin-top: 8px; }
+  .user-links a { display: block; margin-bottom: 3px; color: var(--accent-blue); text-decoration: none; font-size: 13px; }
+  .user-links a:hover { text-decoration: underline; }
+
+  .pagination { display: flex; align-items: center; justify-content: center; margin-top: 12px; padding-top: 12px; border-top: 2px solid var(--border); }
+  .pagination button {
+    padding: 7px 14px;
+    border: 2px solid var(--border-strong);
+    background: var(--paper-panel);
+    color: var(--ink-soft);
+    cursor: pointer;
+    font-family: var(--font-body);
+    box-shadow: var(--shadow-sm);
+  }
+  .pagination button:disabled { opacity: 0.4; cursor: default; box-shadow: none; }
+  .pagination button:not(:disabled):hover { color: var(--accent-blue); border-color: var(--accent-blue); }
+
+  #conv-modal .modal-body {
+    flex-direction: column;
+    padding: 20px;
+    overflow-y: auto;
+    gap: 12px;
+  }
+
+  .conv-row { display: flex; gap: 12px; }
+  .conv-row > * { flex: 1; }
+  #conv-inputArea, #conv-resultOutput { width: 100%; height: 130px; resize: vertical; font-family: var(--font-mono); font-size: 13px; }
+  #conv-resultOutput { background: var(--paper-panel-alt); }
+  #conv-imagePreview { max-width: 100%; max-height: 200px; border: 2px solid var(--border-strong); display: none; }
+  .conv-hint { font-size: 12px; color: var(--ink-faint); font-style: italic; }
+  .conv-actions { display: flex; gap: 10px; flex-wrap: wrap; }
+  .hidden { display: none !important; }
+
+  #conv-fileInput, #upload-htmlInput { display: none; }
+
+  #upload-toast {
+    display: none;
+    position: fixed;
+    right: 18px;
+    bottom: 44px;
+    z-index: 1300;
+    width: 400px;
+    max-width: calc(100vw - 36px);
+    background: var(--paper-panel);
+    border: 3px solid var(--accent-teal);
+    box-shadow: var(--shadow-md);
+  }
+  #upload-toast.open { display: block; }
+
+  #upload-toast .toast-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    padding: 9px 12px;
+    background: var(--paper-panel-alt);
+    border-bottom: 2px solid var(--accent-teal);
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--accent-teal);
+  }
+  #upload-toast .toast-head span { display: flex; align-items: center; gap: 8px; min-width: 0; }
+  #upload-toast .toast-head #toast-title { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  #upload-toast .toast-head.warn { border-bottom-color: var(--warn); color: var(--warn); }
+  #upload-toast .toast-head.error { border-bottom-color: var(--danger); color: var(--danger); }
+
+  #upload-toast .toast-close {
+    width: 24px; height: 24px;
+    flex-shrink: 0;
+    border: 2px solid var(--border-strong);
+    background: var(--paper);
+    color: var(--ink-soft);
+    cursor: pointer;
+    font-size: 14px;
+    line-height: 1;
+  }
+  #upload-toast .toast-close:hover { color: var(--accent); border-color: var(--accent); }
+
+  #upload-toast .toast-body { padding: 12px; }
+  #upload-toast .toast-msg { font-size: 13px; line-height: 1.5; color: var(--ink-soft); margin-bottom: 12px; }
+  #upload-toast .toast-actions { display: flex; flex-wrap: wrap; gap: 8px; }
+  #upload-toast .toast-actions .btn { padding: 6px 10px; font-size: 12px; }
+
+  #drop-hint {
+    display: none;
+    position: fixed;
+    inset: 0;
+    z-index: 1250;
+    background: rgba(15, 13, 9, 0.55);
+    align-items: center;
+    justify-content: center;
+    pointer-events: none;
+  }
+  #drop-hint.open { display: flex; }
+  #drop-hint div {
+    padding: 26px 40px;
+    background: var(--paper-panel);
+    border: 3px dashed var(--accent-teal);
+    box-shadow: var(--shadow-lg);
+    font-size: 17px;
+    font-weight: 700;
+    color: var(--accent-teal);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .sticky-note {
+    position: absolute;
+    width: 170px;
+    min-height: 160px;
+    padding: 32px 14px 16px;
+    pointer-events: auto;
+    box-shadow: 4px 8px 14px rgba(30,26,18,0.28);
+    transition: box-shadow 0.15s ease;
+    font-family: var(--font-body);
+    font-style: italic;
+  }
+
+  .sticky-note.dragging {
+    box-shadow: 9px 18px 24px rgba(30,26,18,0.38);
+    z-index: 60;
+    transition: none;
+  }
+
+  .sticky-note::after {
+    content: "";
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    width: 0;
+    height: 0;
+    border-style: solid;
+    border-width: 0 0 20px 20px;
+    border-color: transparent transparent rgba(0,0,0,0.16) transparent;
+  }
+
+  .sticky-pin {
+    position: absolute;
+    top: 6px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 26px;
+    height: 26px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: rgba(47,42,34,0.5);
+    cursor: grab;
+    font-size: 14px;
+  }
+  .sticky-pin:active { cursor: grabbing; }
+
+  .sticky-text {
+    width: 100%;
+    height: 100%;
+    min-height: 108px;
+    outline: none;
+    font-size: 15px;
+    line-height: 1.5;
+    color: #2f2a22;
+    overflow-wrap: break-word;
+    cursor: text;
+  }
+  .sticky-text:empty:before {
+    content: attr(data-placeholder);
+    color: rgba(47,42,34,0.4);
+  }
+
+  .sticky-yellow { background: #f5e0a3; border: 2px solid #b6924f; }
+  .sticky-pink   { background: #f3c9c9; border: 2px solid #cf9a9a; }
+  .sticky-blue   { background: #c9dbe8; border: 2px solid #8fa9bd; }
+  .sticky-green  { background: #d3e5c4; border: 2px solid #9ab884; }
+  .sticky-orange { background: #f2d3a6; border: 2px solid #cf9f5c; }
+
+  .sticky-ghost {
+    position: fixed;
+    width: 120px;
+    height: 120px;
+    pointer-events: none;
+    z-index: 1200;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0.85;
+    box-shadow: 4px 8px 14px rgba(30,26,18,0.3);
+    font-size: 22px;
+    color: rgba(47,42,34,0.5);
+  }
+
+  .sticky-context-menu {
+    position: fixed;
+    z-index: 1100;
+    background: var(--paper-panel);
+    border: 2px solid var(--border-strong);
+    box-shadow: var(--shadow-md);
+    padding: 10px;
+    min-width: 168px;
+  }
+
+  .sticky-menu-label {
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--ink-faint);
+    margin-bottom: 6px;
+    font-weight: 600;
+  }
+
+  .sticky-menu-colors { display: flex; gap: 8px; margin-bottom: 10px; }
+  .sticky-swatch { width: 22px; height: 22px; border: 2px solid var(--border-strong); cursor: pointer; padding: 0; }
+  .sticky-swatch-yellow { background: #f5e0a3; }
+  .sticky-swatch-pink   { background: #f3c9c9; }
+  .sticky-swatch-blue   { background: #c9dbe8; }
+  .sticky-swatch-green  { background: #d3e5c4; }
+  .sticky-swatch-orange { background: #f2d3a6; }
+  .sticky-swatch:hover { border-color: var(--ink); }
+
+  .sticky-menu-divider { height: 2px; background: var(--border); margin: 8px 0; }
+
+  .sticky-menu-delete {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 7px 8px;
+    background: var(--paper);
+    border: 2px solid var(--danger);
+    color: var(--danger);
+    cursor: pointer;
+    font-family: var(--font-body);
+    font-size: 13px;
+  }
+  .sticky-menu-delete:hover { background: var(--danger); color: #fff; }
+
+  #gate {
+    position: fixed;
+    inset: 0;
+    z-index: 5000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+    background: var(--paper);
+    background-image: radial-gradient(var(--border) 1px, transparent 1px);
+    background-size: 22px 22px;
+    font-family: var(--font-body);
+    opacity: 1;
+    transition: opacity 0.28s ease;
+  }
+  #gate::before {
+    content: "";
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 6px;
+    background: linear-gradient(90deg, var(--accent), var(--accent-blue), var(--accent-teal), var(--accent-mustard));
+  }
+  #gate.leaving { opacity: 0; pointer-events: none; }
+  #gate.unlocked { display: none; }
+
+  .gate-card {
+    width: 100%;
+    max-width: 420px;
+    background: var(--paper-panel);
+    border: 3px solid var(--border-strong);
+    box-shadow: var(--shadow-lg);
+    transform: rotate(-0.4deg);
+  }
+  .gate-card.shake { animation: gate-shake 0.42s cubic-bezier(.36,.07,.19,.97) both; }
+  @keyframes gate-shake {
+    10%, 90% { transform: translateX(-2px) rotate(-0.4deg); }
+    20%, 80% { transform: translateX(4px) rotate(-0.4deg); }
+    30%, 50%, 70% { transform: translateX(-7px) rotate(-0.4deg); }
+    40%, 60% { transform: translateX(7px) rotate(-0.4deg); }
+  }
+
+  .gate-head {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 16px 20px;
+    background: var(--paper-panel-alt);
+    border-bottom: 4px solid;
+    border-image: linear-gradient(90deg, var(--accent), var(--accent-blue), var(--accent-teal), var(--accent-mustard)) 1;
+    user-select: none;
+  }
+  .gate-head .stamp {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 34px; height: 34px;
+    border: 2px solid var(--accent);
+    color: var(--accent);
+    font-size: 16px;
+    background: var(--paper);
+    transform: rotate(-4deg);
+    flex-shrink: 0;
+  }
+  .gate-head .gate-title {
+    font-size: 18px;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    color: var(--ink);
+  }
+
+  .gate-body { padding: 22px 22px 20px; }
+  .gate-body .gate-heading {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 8px;
+    color: var(--accent);
+  }
+  .gate-sub {
+    font-size: 14px;
+    line-height: 1.55;
+    color: var(--ink-soft);
+    font-style: italic;
+    margin-bottom: 18px;
+  }
+
+  .gate-field { position: relative; }
+  .gate-field > i.lead {
+    position: absolute;
+    left: 13px; top: 50%;
+    transform: translateY(-50%);
+    color: var(--ink-faint);
+    font-size: 14px;
+    pointer-events: none;
+  }
+  #gate-input {
+    width: 100%;
+    padding: 12px 46px 12px 38px;
+    font-size: 15px;
+    letter-spacing: 0.04em;
+    box-shadow: var(--shadow-sm);
+  }
+  #gate-input.bad { border-color: var(--danger); }
+  #gate-eye {
+    position: absolute;
+    right: 0; top: 0; bottom: 0;
+    width: 42px;
+    border: none;
+    border-left: 2px solid var(--border-strong);
+    background: var(--paper-panel-alt);
+    color: var(--ink-soft);
+    cursor: pointer;
+    font-size: 14px;
+  }
+  #gate-eye:hover { color: var(--accent); }
+  #gate-eye:focus-visible { outline: 2px solid var(--accent); outline-offset: -2px; }
+
+  #gate-error {
+    min-height: 22px;
+    margin: 10px 0 12px;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--danger);
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    visibility: hidden;
+  }
+  #gate-error.show { visibility: visible; }
+
+  #gate-submit {
+    width: 100%;
+    justify-content: center;
+    padding: 11px 14px;
+    font-size: 14px;
+    font-weight: 600;
+  }
+
+  .gate-foot {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 9px 16px;
+    background: var(--accent);
+    border-top: 2px solid var(--accent-hover);
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.03em;
+    color: #fbf3ea;
+    user-select: none;
+  }
+  #app {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+  }
+
+]]></style>
+<foreignObject x="0" y="0" width="100%" height="100%">
+<div xmlns="http://www.w3.org/1999/xhtml" id="app">
+<div id="gate" role="dialog" aria-modal="true" aria-labelledby="gate-title">
+  <div class="gate-card" id="gate-card">
+    <div class="gate-head">
+      <span class="stamp"><i class="fa-solid fa-feather-pointed"></i></span>
+      <span class="gate-title" id="gate-title">Paper Editor</span>
+    </div>
+    <div class="gate-body">
+      <div class="gate-heading pane-label" style="color: var(--accent);">
+        <i class="fa-solid fa-lock"></i> Restricted Access
+      </div>
+      <p class="gate-sub">This editor is locked. Enter the password to continue.</p>
+      <div class="gate-field">
+        <i class="fa-solid fa-key lead"></i>
+        <input type="password" id="gate-input" placeholder="Password" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" aria-label="Password"/>
+        <button type="button" id="gate-eye" title="Show / hide password" aria-label="Show or hide password"><i class="fa-regular fa-eye"></i></button>
+      </div>
+      <div id="gate-error" role="alert"><i class="fa-solid fa-triangle-exclamation"></i><span>Incorrect password. Try again.</span></div>
+      <button type="button" class="btn primary" id="gate-submit"><i class="fa-solid fa-lock-open"></i> Unlock Editor</button>
+    </div>
+    <div class="gate-foot">
+      <span>Paper Editor</span>
+      <span>Locked &#9679;</span>
+    </div>
+  </div>
+</div>
+
+<div id="topbar">
+  <div class="logo">
+    <span class="stamp"><i class="fa-solid fa-feather-pointed"></i></span>
+    Paper Editor
+  </div>
+  <div class="actions">
+    <button class="btn ghost" id="btn-theme" title="Toggle dark mode">
+      <i class="fa-solid fa-moon"></i> Dark
+    </button>
+    <button class="btn ghost" id="btn-clear" title="Clear editor">
+      <i class="fa-solid fa-xmark"></i> Clear
+    </button>
+    <button class="btn ghost" id="btn-copy" title="Copy code">
+      <i class="fa-regular fa-copy"></i> Copy
+    </button>
+    <button class="btn ghost accent-teal" id="btn-upload-html" title="Choose an .html file (or drop one anywhere) and it opens in a new tab as a data: URL">
+      <i class="fa-solid fa-file-arrow-up"></i> Upload HTML
+    </button>
+    <input type="file" id="upload-htmlInput" accept=".html,.htm,text/html"/>
+    <button class="btn ghost accent-blue" id="btn-github" title="Search GitHub repositories">
+      <i class="fa-brands fa-github"></i> GitHub
+    </button>
+    <button class="btn ghost accent-teal" id="btn-convert" title="Convert to Data / Blob URL">
+      <i class="fa-solid fa-right-left"></i> Convert
+    </button>
+    <button class="btn ghost accent-mustard" id="btn-sticky" title="Click and drag onto the workspace to place a sticky note">
+      <i class="fa-solid fa-note-sticky"></i> Sticky Note
+    </button>
+    <button class="btn primary" id="btn-open" title="Open result in new tab">
+      <i class="fa-solid fa-arrow-up-right-from-square"></i> Open in Tab
+    </button>
+  </div>
+</div>
+
+<div id="tabstrip">
+  <div class="tab active modified" id="main-tab">
+    <i class="fa-regular fa-file-code" style="color: var(--accent);"></i>
+    index.html
+    <span class="dot"></span>
+  </div>
+</div>
+
+<div id="layout">
+  <div id="editor-pane">
+    <div id="editor-header">
+      <span class="pane-label">Editor</span>
+      <span class="pane-status" id="cursor-pos">Ln 1, Col 1</span>
+    </div>
+    <div id="editor-wrap">
+      <div id="line-numbers"><span>1</span></div>
+      <textarea id="code" spellcheck="false" autocomplete="off" autocorrect="off" autocapitalize="off" placeholder="&lt;!-- Write your HTML here --&gt;"></textarea>
+    </div>
+  </div>
+
+  <div id="divider"></div>
+
+  <div id="preview-pane">
+    <div id="preview-header">
+      <span class="pane-label">Preview</span>
+      <span class="pane-status" id="preview-status">Ready</span>
+    </div>
+    <iframe id="preview-frame" sandbox="allow-scripts allow-same-origin allow-forms allow-popups"></iframe>
+  </div>
+
+  <div id="sticky-layer"></div>
+</div>
+
+<div id="statusbar">
+  <div class="status-left">
+    <span id="sb-chars">0 chars</span>
+    <span id="sb-lines">1 line</span>
+  </div>
+  <div class="status-right">
+    <span>HTML &#183; UTF-8</span>
+    <span>Live Preview &#9679;</span>
+  </div>
+</div>
+
+<div id="upload-toast" role="status" aria-live="polite">
+  <div class="toast-head" id="toast-head">
+    <span><i class="fa-solid fa-file-arrow-up" id="toast-icon"></i><span id="toast-title">Uploaded</span></span>
+    <button class="toast-close" id="toast-close" title="Dismiss">&#215;</button>
+  </div>
+  <div class="toast-body">
+    <div class="toast-msg" id="toast-msg"></div>
+    <div class="toast-actions" id="toast-actions">
+      <button class="btn accent-teal" id="toast-reopen"><i class="fa-solid fa-arrow-up-right-from-square"></i> Open data: URL</button>
+      <button class="btn ghost" id="toast-blob"><i class="fa-solid fa-cube"></i> Open as blob tab</button>
+      <button class="btn ghost" id="toast-copy"><i class="fa-regular fa-copy"></i> Copy data: URL</button>
+      <button class="btn ghost" id="toast-load"><i class="fa-solid fa-file-import"></i> Load into editor</button>
+    </div>
+  </div>
+</div>
+
+<div id="drop-hint"><div><i class="fa-solid fa-file-arrow-up"></i> Drop an .html file to open it in a new tab</div></div>
+
+<div id="gh-overlay" class="modal-overlay">
+  <div id="gh-modal" class="modal">
+    <div class="modal-header">
+      <h2><i class="fa-brands fa-github"></i> GitHub Repository Search</h2>
+      <button class="modal-close" id="gh-close">&#215;</button>
+    </div>
+    <div class="modal-body">
+      <div id="gh-sidebar">
+        <div class="filter-section">
+          <h4>Display Options</h4>
+          <div class="filter-option"><input type="checkbox" id="gh-showStars" checked="checked"/><label for="gh-showStars">Show Stars</label></div>
+          <div class="filter-option"><input type="checkbox" id="gh-showForks" checked="checked"/><label for="gh-showForks">Show Forks</label></div>
+          <div class="filter-option"><input type="checkbox" id="gh-showWatchers" checked="checked"/><label for="gh-showWatchers">Show Watchers</label></div>
+          <div class="filter-option"><input type="checkbox" id="gh-showIssues" checked="checked"/><label for="gh-showIssues">Show Issues</label></div>
+        </div>
+        <div class="filter-section">
+          <h4>Search Type</h4>
+          <div class="filter-option"><input type="radio" id="gh-searchRepos" name="ghSearchType" value="repositories" checked="checked"/><label for="gh-searchRepos">Repositories</label></div>
+          <div class="filter-option"><input type="radio" id="gh-searchUsers" name="ghSearchType" value="users"/><label for="gh-searchUsers">Users</label></div>
+        </div>
+        <div class="filter-section">
+          <h4>Minimum Stars</h4>
+          <div class="num-row"><input type="number" id="gh-minStars" min="0" max="50000" value="0" step="1"/></div>
+        </div>
+        <div class="filter-section">
+          <h4>Minimum Forks</h4>
+          <div class="num-row"><input type="number" id="gh-minForks" min="0" max="20000" value="0" step="1"/></div>
+        </div>
+        <div class="filter-section">
+          <h4>Language</h4>
+          <div class="lang-grid">
+            <div class="filter-option"><input type="checkbox" id="gh-langJavaScript" value="javascript"/><label for="gh-langJavaScript">JavaScript</label></div>
+            <div class="filter-option"><input type="checkbox" id="gh-langPython" value="python"/><label for="gh-langPython">Python</label></div>
+            <div class="filter-option"><input type="checkbox" id="gh-langJava" value="java"/><label for="gh-langJava">Java</label></div>
+            <div class="filter-option"><input type="checkbox" id="gh-langCPP" value="cpp"/><label for="gh-langCPP">C++</label></div>
+            <div class="filter-option"><input type="checkbox" id="gh-langHTML" value="html"/><label for="gh-langHTML">HTML</label></div>
+            <div class="filter-option"><input type="checkbox" id="gh-langCSS" value="css"/><label for="gh-langCSS">CSS</label></div>
+            <div class="filter-option"><input type="checkbox" id="gh-langTypeScript" value="typescript"/><label for="gh-langTypeScript">TypeScript</label></div>
+            <div class="filter-option"><input type="checkbox" id="gh-langC" value="c"/><label for="gh-langC">C</label></div>
+            <div class="filter-option"><input type="checkbox" id="gh-langCSharp" value="csharp"/><label for="gh-langCSharp">C#</label></div>
+            <div class="filter-option"><input type="checkbox" id="gh-langPHP" value="php"/><label for="gh-langPHP">PHP</label></div>
+            <div class="filter-option"><input type="checkbox" id="gh-langRuby" value="ruby"/><label for="gh-langRuby">Ruby</label></div>
+            <div class="filter-option"><input type="checkbox" id="gh-langGo" value="go"/><label for="gh-langGo">Go</label></div>
+            <div class="filter-option"><input type="checkbox" id="gh-langRust" value="rust"/><label for="gh-langRust">Rust</label></div>
+            <div class="filter-option"><input type="checkbox" id="gh-langSwift" value="swift"/><label for="gh-langSwift">Swift</label></div>
+            <div class="filter-option"><input type="checkbox" id="gh-langKotlin" value="kotlin"/><label for="gh-langKotlin">Kotlin</label></div>
+            <div class="filter-option"><input type="checkbox" id="gh-langDart" value="dart"/><label for="gh-langDart">Dart</label></div>
+          </div>
+        </div>
+      </div>
+      <div id="gh-main">
+        <div class="gh-searchbar">
+          <input type="text" id="gh-repoSearch" placeholder="Search GitHub repositories or users&#8230;"/>
+          <button class="btn accent-blue" id="gh-searchBtn"><i class="fa-solid fa-magnifying-glass"></i> Search</button>
+        </div>
+        <div id="gh-results"><p style="color: var(--ink-faint); font-size: 13px;">Enter a search query to see up-to-date results straight from the GitHub API.</p></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="conv-overlay" class="modal-overlay">
+  <div id="conv-modal" class="modal">
+    <div class="modal-header">
+      <h2><i class="fa-solid fa-right-left"></i> Data / Blob URL Converter</h2>
+      <button class="modal-close" id="conv-close">&#215;</button>
+    </div>
+    <div class="modal-body">
+      <div class="conv-row">
+        <div>
+          <label class="pane-label" style="display:block;margin-bottom:6px;">Source</label>
+          <select id="conv-conversionType">
+            <option value="editorCode">Current Editor Code</option>
+            <option value="rawHtml">Raw HTML Code</option>
+            <option value="githubLink">Raw GitHub Link</option>
+            <option value="websiteSource">Website Link</option>
+            <option value="uploadImage">Upload an Image</option>
+            <option value="uploadTextFile">Upload a .txt File</option>
+          </select>
+        </div>
+        <div>
+          <label class="pane-label" style="display:block;margin-bottom:6px;">Output</label>
+          <select id="conv-outputType">
+            <option value="dataUrl">Data URL</option>
+            <option value="blobUrl">Blob URL</option>
+          </select>
+        </div>
+      </div>
+
+      <p class="conv-hint" id="conv-hint">Using the current contents of the code editor.</p>
+
+      <textarea id="conv-inputArea" placeholder="Enter your media / HTML / URL here"></textarea>
+      <input type="file" id="conv-fileInput" accept="image/*,text/*"/>
+      <img id="conv-imagePreview" alt="Image preview"/>
+
+      <div class="conv-actions">
+        <button class="btn ghost" id="conv-chooseFileBtn"><i class="fa-solid fa-upload"></i> Choose File</button>
+        <button class="btn accent-teal" id="conv-generateBtn"><i class="fa-solid fa-bolt"></i> Generate URL</button>
+        <button class="btn ghost" id="conv-copyBtn"><i class="fa-regular fa-copy"></i> Copy</button>
+        <button class="btn ghost" id="conv-openBtn"><i class="fa-solid fa-arrow-up-right-from-square"></i> Open</button>
+        <button class="btn ghost" id="conv-clearBtn"><i class="fa-solid fa-xmark"></i> Clear</button>
+      </div>
+
+      <label class="pane-label" style="display:block;">Result</label>
+      <textarea id="conv-resultOutput" placeholder="Your converted data:/blob: URL will appear here" readonly="readonly"></textarea>
+    </div>
+  </div>
+</div>
+</div>
+</foreignObject>
+<script type="text/javascript"><![CDATA[
+(function () {
+  var XHTML = 'http://www.w3.org/1999/xhtml';
+  var app = document.getElementById('app');
+
+  Object.defineProperty(document, 'body', {
+    configurable: true,
+    get: function () { return app; }
+  });
+
+  document.createElement = function (tag) {
+    return document.createElementNS(XHTML, String(tag).toLowerCase());
+  };
+
+  var nativeInner = Object.getOwnPropertyDescriptor(Element.prototype, 'innerHTML');
+  Object.defineProperty(Element.prototype, 'innerHTML', {
+    configurable: true,
+    get: function () { return nativeInner.get.call(this); },
+    set: function (value) {
+      var parsed = new DOMParser().parseFromString('<!DOCTYPE html><html><body>' + String(value) + '</body></html>', 'text/html');
+      while (this.firstChild) this.removeChild(this.firstChild);
+      var nodes = Array.prototype.slice.call(parsed.body.childNodes);
+      for (var i = 0; i < nodes.length; i++) this.appendChild(document.importNode(nodes[i], true));
+    }
+  });
+})();
+]]></script>
+<script type="text/javascript"><![CDATA[
+  const code    = document.getElementById('code');
+  const frame   = document.getElementById('preview-frame');
+  const lineNos = document.getElementById('line-numbers');
+  const cursorPos = document.getElementById('cursor-pos');
+  const previewStatus = document.getElementById('preview-status');
+  const sbChars = document.getElementById('sb-chars');
+  const sbLines = document.getElementById('sb-lines');
+  const mainTab = document.getElementById('main-tab');
+
+  const starter = `<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Page</title>
+    <style>
+        body {
+            font-family: Georgia, serif;
+            text-align: center;
+            margin-top: 50px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Welcome!</h1>
+    <p>Start editing to see changes</p>
+
+    <script>
+    console.log('Hello from JavaScript!');
+    <\/script>
+</body>
+</html>`;
+
+  code.value = starter;
+
+  let debounce;
+  function updatePreview() {
+    clearTimeout(debounce);
+    debounce = setTimeout(() => {
+      frame.srcdoc = code.value;
+      previewStatus.textContent = 'Updated';
+      setTimeout(() => previewStatus.textContent = 'Live', 800);
+      updateStats();
+    }, 120);
+  }
+
+  function updateStats() {
+    const val = code.value;
+    const lines = val.split('\n').length;
+    sbChars.textContent = val.length + ' chars';
+    sbLines.textContent = lines + (lines === 1 ? ' line' : ' lines');
+    mainTab.classList.toggle('modified', val.length > 0);
+  }
+
+  function updateLineNumbers() {
+    const lines = code.value.split('\n').length;
+    lineNos.innerHTML = Array.from({length: lines}, (_, i) => `<span>${i + 1}</span>`).join('');
+    lineNos.scrollTop = code.scrollTop;
+  }
+
+  code.addEventListener('input', () => { updatePreview(); updateLineNumbers(); });
+  code.addEventListener('scroll', () => { lineNos.scrollTop = code.scrollTop; });
+
+  function updateCursor() {
+    const val = code.value;
+    const sel = code.selectionStart;
+    const lines = val.substring(0, sel).split('\n');
+    const ln = lines.length;
+    const col = lines[lines.length - 1].length + 1;
+    cursorPos.textContent = `Ln ${ln}, Col ${col}`;
+  }
+  code.addEventListener('keyup', updateCursor);
+  code.addEventListener('click', updateCursor);
+  code.addEventListener('selectionchange', updateCursor);
+
+  code.addEventListener('keydown', e => {
+    if (e.key === 'Tab') {
+      e.preventDefault();
+      const s = code.selectionStart, en = code.selectionEnd;
+      code.value = code.value.substring(0, s) + '  ' + code.value.substring(en);
+      code.selectionStart = code.selectionEnd = s + 2;
+      updatePreview();
+      updateLineNumbers();
+    }
+    if ((e.ctrlKey || e.metaKey) && e.key === 's') {
+      e.preventDefault();
+      openInTab();
+    }
+  });
+
+  function openInTab() {
+    const html = code.value;
+    if (!html.trim()) return;
+    const blob = new Blob([html], {type: 'text/html'});
+    const url = URL.createObjectURL(blob);
+    window.open(url, '_blank');
+    setTimeout(() => URL.revokeObjectURL(url), 5000);
+  }
+  document.getElementById('btn-open').addEventListener('click', openInTab);
+
+  document.getElementById('btn-clear').addEventListener('click', () => {
+    if (code.value && !confirm('Clear the editor?')) return;
+    code.value = '';
+    updatePreview();
+    updateLineNumbers();
+    code.focus();
+  });
+
+  document.getElementById('btn-copy').addEventListener('click', () => {
+    navigator.clipboard.writeText(code.value).then(() => {
+      const btn = document.getElementById('btn-copy');
+      const orig = btn.innerHTML;
+      btn.innerHTML = `<i class="fa-solid fa-check" style="color: var(--good);"></i> Copied!`;
+      setTimeout(() => { btn.innerHTML = orig; }, 1500);
+    });
+  });
+
+  const themeBtn = document.getElementById('btn-theme');
+  themeBtn.addEventListener('click', () => {
+    const isDark = document.documentElement.classList.toggle('dark');
+    themeBtn.innerHTML = isDark
+      ? `<i class="fa-solid fa-sun"></i> Light`
+      : `<i class="fa-solid fa-moon"></i> Dark`;
+  });
+
+  const uploadHtmlBtn   = document.getElementById('btn-upload-html');
+  const uploadHtmlInput = document.getElementById('upload-htmlInput');
+  const toast        = document.getElementById('upload-toast');
+  const toastHead    = document.getElementById('toast-head');
+  const toastIcon    = document.getElementById('toast-icon');
+  const toastTitle   = document.getElementById('toast-title');
+  const toastMsg     = document.getElementById('toast-msg');
+  const toastActions = document.getElementById('toast-actions');
+  const dropHint     = document.getElementById('drop-hint');
+
+  let lastUpload = null;
+
+  function bytesToBase64(bytes) {
+    let bin = '';
+    const chunk = 0x8000;
+    for (let i = 0; i < bytes.length; i += chunk) {
+      bin += String.fromCharCode.apply(null, bytes.subarray(i, i + chunk));
+    }
+    return btoa(bin);
+  }
+
+  function formatSize(n) {
+    if (n < 1024) return n + ' B';
+    if (n < 1024 * 1024) return (n / 1024).toFixed(1) + ' KB';
+    return (n / (1024 * 1024)).toFixed(2) + ' MB';
+  }
+
+  function isHtmlFile(file) {
+    return /\.(html?|xhtml)$/i.test(file.name) || file.type === 'text/html' || file.type === 'application/xhtml+xml';
+  }
+
+  function showToast(kind, title, message, iconClass, showActions) {
+    toastHead.className = 'toast-head' + (kind === 'ok' ? '' : ' ' + kind);
+    toastIcon.className = iconClass;
+    toastTitle.textContent = title;
+    toastMsg.textContent = message;
+    toastActions.style.display = showActions ? 'flex' : 'none';
+    toast.classList.add('open');
+  }
+  function hideToast() { toast.classList.remove('open'); }
+  document.getElementById('toast-close').addEventListener('click', hideToast);
+
+  function openDataUrlInNewTab(dataUrl) {
+    try {
+      const w = window.open(dataUrl, '_blank');
+      return !!w;
+    } catch (err) {
+      console.error('Could not open data URL:', err);
+      return false;
+    }
+  }
+
+  function openBlobTab(text) {
+    const blob = new Blob([lastUpload.bytes], { type: 'text/html' });
+    const url = URL.createObjectURL(blob);
+    const w = window.open(url, '_blank');
+    setTimeout(() => URL.revokeObjectURL(url), 60000);
+    return !!w;
+  }
+
+  async function handleHtmlFile(file) {
+    if (!file) return;
+    if (!isHtmlFile(file)) {
+      showToast('error', 'Not an HTML file', '"' + file.name + '" doesn\'t look like an .html or .htm file. Choose a different file.', 'fa-solid fa-triangle-exclamation', false);
+      return;
+    }
+
+    let bytes;
+    try {
+      bytes = new Uint8Array(await file.arrayBuffer());
+    } catch (err) {
+      console.error(err);
+      showToast('error', 'Could not read file', 'The browser couldn\'t read "' + file.name + '". Try selecting it again.', 'fa-solid fa-triangle-exclamation', false);
+      return;
+    }
+
+    let text, charsetPart = '';
+    try {
+      text = new TextDecoder('utf-8', { fatal: true }).decode(bytes);
+      charsetPart = ';charset=utf-8';
+    } catch (e) {
+      text = new TextDecoder('windows-1252').decode(bytes);
+    }
+
+    const dataUrl = 'data:text/html' + charsetPart + ';base64,' + bytesToBase64(bytes);
+    lastUpload = { name: file.name, text, dataUrl, bytes };
+
+    const opened = openDataUrlInNewTab(dataUrl);
+    const sizeNote = formatSize(bytes.length);
+    const big = dataUrl.length > 2 * 1024 * 1024;
+
+    if (!opened) {
+      showToast('warn', file.name + ' (' + sizeNote + ')',
+        'Your browser blocked the new tab. Click "Open data: URL" to open it now.',
+        'fa-solid fa-ban', true);
+    } else if (big) {
+      showToast('warn', file.name + ' (' + sizeNote + ')',
+        'Sent to a new tab, but data: URLs over ~2 MB often fail to load in browsers. If the tab is blank, use "Open as blob tab".',
+        'fa-solid fa-triangle-exclamation', true);
+    } else {
+      showToast('ok', 'Opened ' + file.name + ' (' + sizeNote + ')',
+        'Sent to a new tab as a data: URL. If the tab is blank (some browsers block scripted data: navigation), use "Open as blob tab" or copy the data: URL into the address bar.',
+        'fa-solid fa-circle-check', true);
+    }
+  }
+
+  uploadHtmlBtn.addEventListener('click', () => uploadHtmlInput.click());
+  uploadHtmlInput.addEventListener('change', () => {
+    const file = uploadHtmlInput.files[0];
+    uploadHtmlInput.value = '';
+    handleHtmlFile(file);
+  });
+
+  document.getElementById('toast-reopen').addEventListener('click', () => {
+    if (!lastUpload) return;
+    if (!openDataUrlInNewTab(lastUpload.dataUrl)) {
+      showToast('warn', lastUpload.name, 'Still blocked. Allow pop-ups for this page, or use "Open as blob tab".', 'fa-solid fa-ban', true);
+    }
+  });
+
+  document.getElementById('toast-blob').addEventListener('click', () => {
+    if (!lastUpload) return;
+    if (!openBlobTab()) {
+      showToast('warn', lastUpload.name, 'The new tab was blocked. Allow pop-ups for this page and try again.', 'fa-solid fa-ban', true);
+    }
+  });
+
+  document.getElementById('toast-copy').addEventListener('click', () => {
+    if (!lastUpload) return;
+    const btn = document.getElementById('toast-copy');
+    const orig = btn.innerHTML;
+    const done = () => {
+      btn.innerHTML = '<i class="fa-solid fa-check" style="color: var(--good);"></i> Copied!';
+      setTimeout(() => { btn.innerHTML = orig; }, 1500);
+    };
+    navigator.clipboard.writeText(lastUpload.dataUrl).then(done).catch(() => {
+      const ta = document.createElement('textarea');
+      ta.value = lastUpload.dataUrl;
+      document.body.appendChild(ta);
+      ta.select();
+      try { document.execCommand('copy'); done(); } catch (e) { alert('Copy failed. Use Convert > Raw HTML Code instead.'); }
+      document.body.removeChild(ta);
+    });
+  });
+
+  document.getElementById('toast-load').addEventListener('click', () => {
+    if (!lastUpload) return;
+    if (code.value && !confirm('Replace the current editor contents with "' + lastUpload.name + '"?')) return;
+    code.value = lastUpload.text;
+    updatePreview();
+    updateLineNumbers();
+    updateCursor();
+    hideToast();
+  });
+
+  let dragDepth = 0;
+  function dragHasFiles(e) {
+    return e.dataTransfer && Array.from(e.dataTransfer.types || []).includes('Files');
+  }
+  document.addEventListener('dragenter', e => {
+    if (!dragHasFiles(e) || gateLocked) return;
+    dragDepth++;
+    dropHint.classList.add('open');
+  });
+  document.addEventListener('dragleave', e => {
+    if (!dragHasFiles(e) || gateLocked) return;
+    dragDepth = Math.max(0, dragDepth - 1);
+    if (dragDepth === 0) dropHint.classList.remove('open');
+  });
+  document.addEventListener('dragover', e => {
+    if (!dragHasFiles(e)) return;
+    e.preventDefault();
+  });
+  document.addEventListener('drop', e => {
+    if (!dragHasFiles(e)) return;
+    e.preventDefault();
+    dragDepth = 0;
+    dropHint.classList.remove('open');
+    if (gateLocked) return;
+    const file = e.dataTransfer.files && e.dataTransfer.files[0];
+    handleHtmlFile(file);
+  });
+
+  const divider = document.getElementById('divider');
+  const layout  = document.getElementById('layout');
+  const editorPane = document.getElementById('editor-pane');
+  let dragging = false, startX = 0, startW = 0;
+
+  divider.addEventListener('mousedown', e => {
+    dragging = true;
+    startX = e.clientX;
+    startW = editorPane.offsetWidth;
+    divider.classList.add('dragging');
+    document.body.style.cursor = 'col-resize';
+    document.body.style.userSelect = 'none';
+  });
+  document.addEventListener('mousemove', e => {
+    if (!dragging) return;
+    const dx = e.clientX - startX;
+    const total = layout.offsetWidth - 5;
+    const newW = Math.max(200, Math.min(total - 200, startW + dx));
+    editorPane.style.width = newW + 'px';
+    editorPane.style.flex = 'none';
+  });
+  document.addEventListener('mouseup', () => {
+    if (!dragging) return;
+    dragging = false;
+    divider.classList.remove('dragging');
+    document.body.style.cursor = '';
+    document.body.style.userSelect = '';
+  });
+
+  updatePreview();
+  updateLineNumbers();
+  updateStats();
+
+  function openModal(overlay) { overlay.classList.add('open'); }
+  function closeModal(overlay) { overlay.classList.remove('open'); }
+
+  const ghOverlay = document.getElementById('gh-overlay');
+  const convOverlay = document.getElementById('conv-overlay');
+
+  document.getElementById('btn-github').addEventListener('click', () => openModal(ghOverlay));
+  document.getElementById('gh-close').addEventListener('click', () => closeModal(ghOverlay));
+  ghOverlay.addEventListener('click', e => { if (e.target === ghOverlay) closeModal(ghOverlay); });
+
+  document.getElementById('btn-convert').addEventListener('click', () => {
+    openModal(convOverlay);
+    convToggleInputArea();
+  });
+  document.getElementById('conv-close').addEventListener('click', () => closeModal(convOverlay));
+  convOverlay.addEventListener('click', e => { if (e.target === convOverlay) closeModal(convOverlay); });
+
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape') {
+      closeModal(ghOverlay);
+      closeModal(convOverlay);
+      closeStickyMenu();
+      hideToast();
+    }
+  });
+
+  const ghInput = document.getElementById('gh-repoSearch');
+  const ghResults = document.getElementById('gh-results');
+  let ghCurrentPage = 1;
+  let ghTotalResults = 0;
+  const ghResultsPerPage = 30;
+
+  document.getElementById('gh-searchBtn').addEventListener('click', () => ghSearchRepos(1));
+  ghInput.addEventListener('keypress', e => { if (e.key === 'Enter') ghSearchRepos(1); });
+
+  document.getElementById('gh-minStars').addEventListener('input', () => { if (ghInput.value.trim()) ghSearchRepos(1); });
+  document.getElementById('gh-minForks').addEventListener('input', () => { if (ghInput.value.trim()) ghSearchRepos(1); });
+
+  document.querySelectorAll('#gh-sidebar input[type="checkbox"], #gh-sidebar input[type="radio"]').forEach(inp => {
+    inp.addEventListener('change', () => {
+      if (inp.name === 'ghSearchType') {
+        if (ghInput.value.trim()) ghSearchRepos(1);
+      } else if (inp.id.startsWith('gh-lang')) {
+        if (ghInput.value.trim()) ghSearchRepos(1);
+      } else {
+        ghFilterResults();
+      }
+    });
+  });
+
+  function ghDownloadRepoZip(fullName) {
+    fetch(`https://api.github.com/repos/${fullName}`)
+      .then(r => { if (!r.ok) throw new Error('Failed to fetch repository info'); return r.json(); })
+      .then(repo => {
+        if (!repo.default_branch) throw new Error('Default branch not found');
+        const zipUrl = `https://github.com/${fullName}/archive/refs/heads/${repo.default_branch}.zip`;
+        const tmp = `https://api.codetabs.com/v1/tmp?quest=${encodeURIComponent(zipUrl)}`;
+        const proxy = `https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(zipUrl)}`;
+        fetch(tmp).then(r => { if (!r.ok) throw new Error('tmp failed'); return r.blob(); })
+          .then(blob => ghTriggerDownload(blob, `${fullName.replace('/', '-')}-${repo.default_branch}.zip`))
+          .catch(() => {
+            fetch(proxy).then(r => { if (!r.ok) throw new Error('proxy failed'); return r.blob(); })
+              .then(blob => ghTriggerDownload(blob, `${fullName.replace('/', '-')}-${repo.default_branch}.zip`))
+              .catch(err => { alert('Failed to download ZIP file. Please try again.'); console.error(err); });
+          });
+      })
+      .catch(err => { alert('Failed to download ZIP file. Please try again.'); console.error(err); });
+  }
+
+  function ghTriggerDownload(blob, filename) {
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(a.href);
+  }
+
+  function ghSearchRepos(page = 1) {
+    const query = ghInput.value.trim();
+    const searchType = document.querySelector('input[name="ghSearchType"]:checked').value;
+
+    if (!query) {
+      ghResults.innerHTML = '<p style="color: var(--ink-faint); font-size: 13px;">Please enter a search query.</p>';
+      ghTotalResults = 0;
+      return;
+    }
+
+    ghResults.innerHTML = '<p style="color: var(--ink-faint); font-size: 13px;">Searching GitHub&hellip;</p>';
+
+    const searchQuery = ghBuildSearchQuery(query);
+    const apiUrl = `https://api.github.com/search/${searchType}?q=${encodeURIComponent(searchQuery)}&page=${page}&per_page=${ghResultsPerPage}`;
+
+    fetch(apiUrl)
+      .then(r => r.json())
+      .then(data => {
+        if (data.items && data.items.length) {
+          ghTotalResults = data.total_count;
+          ghCurrentPage = page;
+          ghDisplayResults(data.items, searchType);
+        } else if (data.message) {
+          ghResults.innerHTML = `<p style="color: var(--accent); font-size: 13px;">GitHub API error: ${data.message}</p>`;
+          ghTotalResults = 0;
+        } else {
+          ghResults.innerHTML = `<p style="color: var(--ink-faint); font-size: 13px;">No ${searchType} found.</p>`;
+          ghTotalResults = 0;
+        }
+      })
+      .catch(err => {
+        ghResults.innerHTML = `<p style="color: var(--accent); font-size: 13px;">Error fetching ${searchType}.</p>`;
+        console.error(err);
+        ghTotalResults = 0;
+      });
+  }
+
+  function ghBuildSearchQuery(query) {
+    let q = query;
+    const minStars = document.getElementById('gh-minStars').value;
+    const minForks = document.getElementById('gh-minForks').value;
+    if (minStars > 0) q += ` stars:>=${minStars}`;
+    if (minForks > 0) q += ` forks:>=${minForks}`;
+    const languages = [];
+    document.querySelectorAll('#gh-sidebar input[id^="gh-lang"]:checked').forEach(inp => languages.push(`language:${inp.value}`));
+    if (languages.length) q += ` ${languages.join(' ')}`;
+    return q;
+  }
+
+  function ghDisplayResults(items, searchType) {
+    ghResults.innerHTML = '';
+
+    const info = document.createElement('div');
+    info.className = 'results-info';
+    const start = (ghCurrentPage - 1) * ghResultsPerPage + 1;
+    const end = Math.min(ghCurrentPage * ghResultsPerPage, ghTotalResults);
+    info.textContent = `Showing ${start}-${end} of ${ghTotalResults.toLocaleString()} results (Page ${ghCurrentPage})`;
+    ghResults.appendChild(info);
+
+    items.forEach(item => {
+      const div = document.createElement('div');
+      div.className = 'repo';
+
+      if (searchType === 'repositories') {
+        div.innerHTML = `
+          <a href="#" class="repo-title" onclick="ghFetchRepoFiles('${item.full_name}', this); return false;">
+            ${item.name} by ${item.owner.login}
+          </a>
+          <button class="download-zip-button" title="Download repository as ZIP" onclick="ghDownloadRepoZip('${item.full_name}')">
+            <i class="fa-solid fa-file-zipper"></i> Download ZIP
+          </button>
+          <div class="repo-stats">
+            <span class="stars-stat" title="Stars"><i class="fa-solid fa-star"></i> ${item.stargazers_count}</span>
+            <span class="forks-stat" title="Forks"><i class="fa-solid fa-code-branch"></i> ${item.forks_count}</span>
+            <span class="watchers-stat" title="Watchers"><i class="fa-solid fa-eye"></i> ${item.watchers_count}</span>
+            <span class="issues-stat" title="Open Issues"><i class="fa-solid fa-circle-exclamation"></i> ${item.open_issues_count}</span>
+          </div>
+          <p>${ghParseDescription(item.description)}</p>
+          ${item.homepage ? `<p><i class="fa-solid fa-link"></i> <a href="${item.homepage}" target="_blank">${item.homepage}</a></p>` : ''}
+          <div class="files" style="display:none;"></div>
+        `;
+      } else {
+        div.className = 'user-item';
+        div.innerHTML = `
+          <a href="#" class="user-title" onclick="ghFetchUserDetails('${item.login}', this); return false;">${item.login}</a>
+          <button class="profile-button" onclick="window.open('${item.html_url}', '_blank')"><i class="fa-brands fa-github"></i> Profile</button>
+          <p>${item.bio || 'No bio available'}</p>
+          <div class="user-details" style="display:none;"></div>
+        `;
+      }
+      ghResults.appendChild(div);
+    });
+
+    ghUpdatePagination();
+    ghFilterResults();
+  }
+
+  function ghUpdatePagination() {
+    const existing = ghResults.querySelector('.pagination');
+    if (existing) existing.remove();
+    if (ghTotalResults === 0) return;
+
+    const totalPages = Math.min(Math.ceil(ghTotalResults / ghResultsPerPage), 34);
+    const wrap = document.createElement('div');
+    wrap.className = 'pagination';
+
+    const prev = document.createElement('button');
+    prev.textContent = 'Previous';
+    prev.disabled = ghCurrentPage === 1;
+    prev.onclick = () => { if (ghCurrentPage > 1) ghSearchRepos(ghCurrentPage - 1); };
+    wrap.appendChild(prev);
+
+    const info = document.createElement('span');
+    info.style.margin = '0 16px';
+    info.style.color = 'var(--ink-soft)';
+    info.style.fontSize = '13px';
+    info.textContent = `Page ${ghCurrentPage} of ${totalPages}`;
+    wrap.appendChild(info);
+
+    const next = document.createElement('button');
+    next.textContent = 'Next';
+    next.disabled = ghCurrentPage >= totalPages;
+    next.onclick = () => { if (ghCurrentPage < totalPages) ghSearchRepos(ghCurrentPage + 1); };
+    wrap.appendChild(next);
+
+    ghResults.appendChild(wrap);
+  }
+
+  function ghFilterResults() {
+    const showStars = document.getElementById('gh-showStars').checked;
+    const showForks = document.getElementById('gh-showForks').checked;
+    const showWatchers = document.getElementById('gh-showWatchers').checked;
+    const showIssues = document.getElementById('gh-showIssues').checked;
+    document.querySelectorAll('.stars-stat').forEach(el => el.style.display = showStars ? '' : 'none');
+    document.querySelectorAll('.forks-stat').forEach(el => el.style.display = showForks ? '' : 'none');
+    document.querySelectorAll('.watchers-stat').forEach(el => el.style.display = showWatchers ? '' : 'none');
+    document.querySelectorAll('.issues-stat').forEach(el => el.style.display = showIssues ? '' : 'none');
+  }
+
+  function ghParseDescription(description) {
+    if (!description) return 'No description available';
+    return description.replace(/(https?:\/\/[^\s]+)/g, url => `<a href="${url}" target="_blank">${url}</a>`);
+  }
+
+  function ghFetchRepoFiles(fullName, element) {
+    const filesDiv = element.closest('.repo').querySelector('.files');
+    const isVisible = filesDiv.style.display !== 'none';
+    if (isVisible) { filesDiv.style.display = 'none'; return; }
+    if (filesDiv.innerHTML) { filesDiv.style.display = 'block'; return; }
+
+    fetch(`https://api.github.com/repos/${fullName}/contents`)
+      .then(r => r.json())
+      .then(files => {
+        if (!Array.isArray(files)) { filesDiv.innerHTML = '<p style="font-size:12px;color:var(--ink-faint);">No files found.</p>'; filesDiv.style.display = 'block'; return; }
+        files.forEach(file => {
+          const fd = document.createElement('div');
+          fd.className = 'file';
+          fd.innerHTML = `
+            <span class="file-name">${file.name}</span>
+            <div class="file-icons">
+              <a href="${file.html_url}" target="_blank" title="View on GitHub"><i class="fa-brands fa-github"></i></a>
+              ${file.download_url ? `<a title="Insert into editor" onclick="ghInsertFileIntoEditor('${file.download_url}')"><i class="fa-solid fa-file-import"></i></a>
+              <a title="Download file" onclick="ghDownloadFile('${file.download_url}', '${file.name}')"><i class="fa-solid fa-download"></i></a>` : ''}
+            </div>
+          `;
+          filesDiv.appendChild(fd);
+        });
+        filesDiv.style.display = 'block';
+      })
+      .catch(err => console.error('Error fetching files:', err));
+  }
+
+  function ghInsertFileIntoEditor(url) {
+    fetch(url)
+      .then(r => r.text())
+      .then(text => {
+        if (code.value && !confirm('Replace the current editor contents with this file?')) return;
+        code.value = text;
+        updatePreview();
+        updateLineNumbers();
+        closeModal(ghOverlay);
+      })
+      .catch(err => { alert('Could not load file content.'); console.error(err); });
+  }
+
+  function ghFetchUserDetails(username, element) {
+    const detailsDiv = element.closest('.user-item').querySelector('.user-details');
+    const isVisible = detailsDiv.style.display !== 'none';
+    if (isVisible) { detailsDiv.style.display = 'none'; return; }
+    if (detailsDiv.innerHTML) { detailsDiv.style.display = 'block'; return; }
+
+    fetch(`https://api.github.com/users/${username}`)
+      .then(r => r.json())
+      .then(user => {
+        const joinDate = new Date(user.created_at).toLocaleDateString();
+        const lastUpdate = new Date(user.updated_at).toLocaleDateString();
+        let links = [];
+        if (user.blog) links.push(`<a href="${user.blog.startsWith('http') ? user.blog : 'https://' + user.blog}" target="_blank">${user.blog}</a>`);
+        if (user.twitter_username) links.push(`<a href="https://twitter.com/${user.twitter_username}" target="_blank">twitter.com/${user.twitter_username}</a>`);
+        if (user.email) links.push(`<a href="mailto:${user.email}">${user.email}</a>`);
+
+        detailsDiv.innerHTML = `
+          <img src="${user.avatar_url}" alt="${user.login}" class="user-avatar">
+          <div class="user-info">
+            <h4>${user.name || user.login}</h4>
+            ${user.bio ? `<div class="user-description">&ldquo;${user.bio}&rdquo;</div>` : ''}
+            <p><strong>Location:</strong> ${user.location || 'Not specified'}</p>
+            <p><strong>Company:</strong> ${user.company || 'Not specified'}</p>
+            <p><strong>Email:</strong> ${user.email || 'Not specified'}</p>
+            ${links.length ? `<p><strong>Links:</strong></p><div class="user-links">${links.join('')}</div>` : ''}
+          </div>
+          <div class="user-stats">
+            <span title="Public repositories"><i class="fa-solid fa-book"></i> ${user.public_repos} repos</span>
+            <span title="Public gists"><i class="fa-solid fa-file-code"></i> ${user.public_gists} gists</span>
+            <span title="Followers"><i class="fa-solid fa-users"></i> ${user.followers} followers</span>
+            <span title="Following"><i class="fa-solid fa-user-plus"></i> ${user.following} following</span>
+            <br>
+            <span title="Joined"><i class="fa-solid fa-calendar"></i> Joined ${joinDate}</span>
+            <span title="Last updated"><i class="fa-solid fa-clock"></i> Updated ${lastUpdate}</span>
+          </div>
+        `;
+        detailsDiv.style.display = 'block';
+      })
+      .catch(err => {
+        console.error('Error fetching user details:', err);
+        detailsDiv.innerHTML = '<p style="font-size:12px;">Error loading user details.</p>';
+        detailsDiv.style.display = 'block';
+      });
+  }
+
+  function ghDownloadFile(url, filename) {
+    fetch(url)
+      .then(r => r.text())
+      .then(data => {
+        const blob = new Blob([data], { type: 'text/plain' });
+        const link = document.createElement('a');
+        link.href = URL.createObjectURL(blob);
+        link.download = filename;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        URL.revokeObjectURL(link.href);
+      })
+      .catch(err => console.error('Error downloading file:', err));
+  }
+
+  const convType = document.getElementById('conv-conversionType');
+  const convOutputType = document.getElementById('conv-outputType');
+  const convInputArea = document.getElementById('conv-inputArea');
+  const convFileInput = document.getElementById('conv-fileInput');
+  const convChooseFileBtn = document.getElementById('conv-chooseFileBtn');
+  const convImagePreview = document.getElementById('conv-imagePreview');
+  const convResultOutput = document.getElementById('conv-resultOutput');
+  const convHint = document.getElementById('conv-hint');
+
+  let convUploadedDataUrl = '';
+  let convUploadedFileName = '';
+
+  let convProxyIndex = 0;
+  const convCorsProxies = [
+    'https://api.codetabs.com/v1/proxy?quest=',
+    'https://api.codetabs.com/v1/tmp/?quest='
+  ];
+
+  convType.addEventListener('change', convToggleInputArea);
+
+  function convIsUploadType(type) {
+    return type === 'uploadImage' || type === 'uploadTextFile';
+  }
+
+  function convToggleInputArea() {
+    const type = convType.value;
+    convImagePreview.classList.add('hidden');
+    convFileInput.classList.add('hidden');
+    convChooseFileBtn.classList.add('hidden');
+    convInputArea.classList.remove('hidden');
+    convInputArea.readOnly = false;
+    convUploadedDataUrl = '';
+    convUploadedFileName = '';
+    convResultOutput.value = '';
+
+    if (type === 'editorCode') {
+      convInputArea.value = code.value;
+      convInputArea.readOnly = true;
+      convHint.textContent = 'Using the current contents of the code editor (read-only preview).';
+    } else if (type === 'rawHtml') {
+      convInputArea.value = '';
+      convHint.textContent = 'Paste any raw HTML to convert it into a URL.';
+    } else if (type === 'githubLink') {
+      convInputArea.value = '';
+      convHint.textContent = 'Paste a raw.githubusercontent.com (or repo) link to fetch and convert.';
+    } else if (type === 'websiteSource') {
+      convInputArea.value = '';
+      convHint.textContent = 'Paste a website URL to fetch its HTML and convert it.';
+    } else if (type === 'uploadImage') {
+      convInputArea.classList.add('hidden');
+      convFileInput.classList.remove('hidden');
+      convChooseFileBtn.classList.remove('hidden');
+      convFileInput.accept = 'image/*';
+      convFileInput.value = '';
+      convHint.textContent = 'Choose an image file, then press Generate URL.';
+    } else if (type === 'uploadTextFile') {
+      convInputArea.classList.add('hidden');
+      convFileInput.classList.remove('hidden');
+      convChooseFileBtn.classList.remove('hidden');
+      convFileInput.accept = '.txt,text/plain';
+      convFileInput.value = '';
+      convHint.textContent = 'Choose a .txt file, then press Generate URL.';
+    }
+  }
+
+  convChooseFileBtn.addEventListener('click', () => convFileInput.click());
+
+  convFileInput.addEventListener('change', convHandleFile);
+  function convHandleFile() {
+    const type = convType.value;
+    const file = convFileInput.files[0];
+    if (!file) return;
+    convUploadedFileName = file.name;
+    const reader = new FileReader();
+
+    if (type === 'uploadImage') {
+      reader.onload = e => {
+        convUploadedDataUrl = e.target.result;
+        convImagePreview.src = convUploadedDataUrl;
+        convImagePreview.classList.remove('hidden');
+        convHint.textContent = 'Loaded "' + file.name + '". Press Generate URL.';
+      };
+      reader.onerror = () => alert('Could not read that image file.');
+      reader.readAsDataURL(file);
+    } else if (type === 'uploadTextFile') {
+      reader.onload = e => {
+        const b64 = btoa(unescape(encodeURIComponent(e.target.result)));
+        convUploadedDataUrl = 'data:text/plain;base64,' + b64;
+        convHint.textContent = 'Loaded "' + file.name + '". Press Generate URL.';
+      };
+      reader.onerror = () => alert('Could not read that text file.');
+      reader.readAsText(file);
+    }
+  }
+
+  document.getElementById('conv-generateBtn').addEventListener('click', convGenerateUrl);
+  function convGenerateUrl() {
+    const type = convType.value;
+    const outputType = convOutputType.value;
+
+    if (type === 'editorCode') {
+      convInputArea.value = code.value;
+      convConvertRawHtmlToUrl(outputType, code.value);
+    } else if (type === 'rawHtml') {
+      convConvertRawHtmlToUrl(outputType, convInputArea.value);
+    } else if (type === 'githubLink' || type === 'websiteSource') {
+      convFetchAndConvertUrl(outputType);
+    } else if (convIsUploadType(type)) {
+      if (!convUploadedDataUrl) {
+        alert('Choose a file first.');
+        return;
+      }
+      convResultOutput.value = convConvertOutput(convUploadedDataUrl, outputType);
+    }
+  }
+
+  function convConvertRawHtmlToUrl(outputType, htmlInput) {
+    const b64 = btoa(unescape(encodeURIComponent(htmlInput)));
+    const dataUrl = 'data:text/html;base64,' + b64;
+    convResultOutput.value = convConvertOutput(dataUrl, outputType);
+  }
+
+  function convFetchAndConvertUrl(outputType) {
+    const url = convInputArea.value.trim();
+    if (!url) return;
+    const proxyUrl = convCorsProxies[convProxyIndex];
+    convResultOutput.value = 'Fetching…';
+
+    fetch(proxyUrl + url)
+      .then(r => r.text())
+      .then(html => {
+        const b64 = btoa(unescape(encodeURIComponent(html)));
+        const dataUrl = 'data:text/html;base64,' + b64;
+        convResultOutput.value = convConvertOutput(dataUrl, outputType);
+      })
+      .catch(err => {
+        convResultOutput.value = '';
+        alert('Error fetching content: ' + err);
+      });
+
+    convProxyIndex = (convProxyIndex + 1) % convCorsProxies.length;
+  }
+
+  function convConvertOutput(dataUrl, outputType) {
+    return outputType === 'blobUrl' ? convConvertToBlobUrl(dataUrl) : dataUrl;
+  }
+
+  function convConvertToBlobUrl(dataUrl) {
+    const blob = convDataUrlToBlob(dataUrl);
+    return URL.createObjectURL(blob);
+  }
+
+  function convDataUrlToBlob(dataUrl) {
+    const parts = dataUrl.split(',');
+    const mime = parts[0].match(/:(.*?);/)[1];
+    const data = atob(parts[1]);
+    const arr = [];
+    for (let i = 0; i < data.length; i++) arr.push(data.charCodeAt(i));
+    return new Blob([new Uint8Array(arr)], { type: mime });
+  }
+
+  document.getElementById('conv-copyBtn').addEventListener('click', () => {
+    if (!convResultOutput.value) return;
+    navigator.clipboard.writeText(convResultOutput.value).then(() => {
+      const btn = document.getElementById('conv-copyBtn');
+      const orig = btn.innerHTML;
+      btn.innerHTML = `<i class="fa-solid fa-check" style="color: var(--good);"></i> Copied!`;
+      setTimeout(() => { btn.innerHTML = orig; }, 1500);
+    });
+  });
+
+  document.getElementById('conv-openBtn').addEventListener('click', () => {
+    if (!convResultOutput.value) return;
+    window.open(convResultOutput.value, '_blank');
+  });
+
+  document.getElementById('conv-clearBtn').addEventListener('click', () => {
+    convInputArea.value = convType.value === 'editorCode' ? code.value : '';
+    convResultOutput.value = '';
+    convFileInput.value = '';
+    convImagePreview.src = '';
+    convImagePreview.classList.add('hidden');
+    convUploadedDataUrl = '';
+    convUploadedFileName = '';
+  });
+
+  const stickyLayer = document.getElementById('sticky-layer');
+  const stickyBtn = document.getElementById('btn-sticky');
+  const stickyColors = ['yellow', 'pink', 'blue', 'green', 'orange'];
+  let stickyColorCycle = 0;
+  let stickyNotesCreated = 0;
+  let activeStickyMenu = null;
+
+  stickyBtn.addEventListener('mousedown', stickyBtnMouseDown);
+
+  function stickyBtnMouseDown(e) {
+    e.preventDefault();
+    let stickyDragStarted = false;
+    let stickyGhost = null;
+    const startX = e.clientX;
+    const startY = e.clientY;
+    const colorName = stickyColors[stickyColorCycle % stickyColors.length];
+
+    function onMove(ev) {
+      const dx = ev.clientX - startX;
+      const dy = ev.clientY - startY;
+      if (!stickyDragStarted && Math.hypot(dx, dy) > 5) {
+        stickyDragStarted = true;
+        stickyGhost = document.createElement('div');
+        stickyGhost.className = 'sticky-ghost sticky-' + colorName;
+        stickyGhost.innerHTML = '<i class="fa-solid fa-note-sticky"></i>';
+        document.body.appendChild(stickyGhost);
+      }
+      if (stickyDragStarted && stickyGhost) {
+        stickyGhost.style.left = (ev.clientX - 60) + 'px';
+        stickyGhost.style.top = (ev.clientY - 60) + 'px';
+      }
+    }
+
+    function onUp(ev) {
+      document.removeEventListener('mousemove', onMove);
+      document.removeEventListener('mouseup', onUp);
+      if (stickyGhost) { stickyGhost.remove(); stickyGhost = null; }
+
+      const layoutRect = layout.getBoundingClientRect();
+      let x, y;
+      if (stickyDragStarted) {
+        x = ev.clientX - layoutRect.left - 85;
+        y = ev.clientY - layoutRect.top - 85;
+      } else {
+        const offset = (stickyNotesCreated % 5) * 18;
+        x = layoutRect.width / 2 - 85 + offset;
+        y = layoutRect.height / 2 - 85 + offset;
+      }
+      x = Math.max(4, Math.min(layoutRect.width - 178, x));
+      y = Math.max(4, Math.min(layoutRect.height - 178, y));
+
+      createStickyNote(x, y, colorName);
+      stickyColorCycle++;
+    }
+
+    document.addEventListener('mousemove', onMove);
+    document.addEventListener('mouseup', onUp);
+  }
+
+  function createStickyNote(x, y, colorName) {
+    stickyNotesCreated++;
+    const note = document.createElement('div');
+    note.className = 'sticky-note sticky-' + colorName;
+    const rotate = (Math.random() * 8 - 4).toFixed(2);
+    note.dataset.baseRotate = rotate;
+    note.style.left = x + 'px';
+    note.style.top = y + 'px';
+    note.style.transform = `rotate(${rotate}deg)`;
+    note.innerHTML = `
+      <div class="sticky-pin" title="Drag to move"><i class="fa-solid fa-thumbtack"></i></div>
+      <div class="sticky-text" contenteditable="true" data-placeholder="Write something&hellip;"></div>
+    `;
+    stickyLayer.appendChild(note);
+
+    const pin = note.querySelector('.sticky-pin');
+    pin.addEventListener('mousedown', ev => startNoteDrag(ev, note));
+    note.addEventListener('contextmenu', ev => showStickyMenu(ev, note));
+    note.addEventListener('mousemove', ev => tiltNote(ev, note));
+    note.addEventListener('mouseleave', () => resetTilt(note));
+
+    note.querySelector('.sticky-text').focus();
+  }
+
+  function startNoteDrag(e, note) {
+    e.preventDefault();
+    e.stopPropagation();
+    const layoutRect = layout.getBoundingClientRect();
+    const startX = e.clientX, startY = e.clientY;
+    const startLeft = parseFloat(note.style.left) || 0;
+    const startTop = parseFloat(note.style.top) || 0;
+    note.classList.add('dragging');
+
+    function onMove(ev) {
+      let nx = startLeft + (ev.clientX - startX);
+      let ny = startTop + (ev.clientY - startY);
+      nx = Math.max(-60, Math.min(layoutRect.width - 110, nx));
+      ny = Math.max(-60, Math.min(layoutRect.height - 110, ny));
+      note.style.left = nx + 'px';
+      note.style.top = ny + 'px';
+    }
+    function onUp() {
+      document.removeEventListener('mousemove', onMove);
+      document.removeEventListener('mouseup', onUp);
+      note.classList.remove('dragging');
+    }
+    document.addEventListener('mousemove', onMove);
+    document.addEventListener('mouseup', onUp);
+  }
+
+  function tiltNote(e, note) {
+    if (note.classList.contains('dragging')) return;
+    const rect = note.getBoundingClientRect();
+    const px = (e.clientX - rect.left) / rect.width;
+    const py = (e.clientY - rect.top) / rect.height;
+    const rotateY = (px - 0.5) * 14;
+    const rotateX = (0.5 - py) * 14;
+    const base = note.dataset.baseRotate || 0;
+    note.style.transform = `rotate(${base}deg) perspective(500px) rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
+  }
+
+  function resetTilt(note) {
+    if (note.classList.contains('dragging')) return;
+    const base = note.dataset.baseRotate || 0;
+    note.style.transform = `rotate(${base}deg)`;
+  }
+
+  function closeStickyMenu() {
+    if (activeStickyMenu) { activeStickyMenu.remove(); activeStickyMenu = null; }
+    document.removeEventListener('mousedown', handleStickyMenuOutsideClick);
+  }
+
+  function handleStickyMenuOutsideClick(ev) {
+    if (activeStickyMenu && !activeStickyMenu.contains(ev.target)) closeStickyMenu();
+  }
+
+  function showStickyMenu(e, note) {
+    e.preventDefault();
+    closeStickyMenu();
+
+    const menu = document.createElement('div');
+    menu.className = 'sticky-context-menu';
+
+    const label = document.createElement('div');
+    label.className = 'sticky-menu-label';
+    label.textContent = 'Change Color';
+    menu.appendChild(label);
+
+    const colorRow = document.createElement('div');
+    colorRow.className = 'sticky-menu-colors';
+    stickyColors.forEach(c => {
+      const sw = document.createElement('button');
+      sw.className = 'sticky-swatch sticky-swatch-' + c;
+      sw.title = c;
+      sw.addEventListener('click', () => {
+        stickyColors.forEach(cc => note.classList.remove('sticky-' + cc));
+        note.classList.add('sticky-' + c);
+        closeStickyMenu();
+      });
+      colorRow.appendChild(sw);
+    });
+    menu.appendChild(colorRow);
+
+    const divLine = document.createElement('div');
+    divLine.className = 'sticky-menu-divider';
+    menu.appendChild(divLine);
+
+    const del = document.createElement('button');
+    del.className = 'sticky-menu-delete';
+    del.innerHTML = '<i class="fa-solid fa-trash"></i> Delete Note';
+    del.addEventListener('click', () => { note.remove(); closeStickyMenu(); });
+    menu.appendChild(del);
+
+    document.body.appendChild(menu);
+    activeStickyMenu = menu;
+
+    const menuRect = menu.getBoundingClientRect();
+    let left = e.clientX;
+    let top = e.clientY;
+    if (left + menuRect.width > window.innerWidth) left = window.innerWidth - menuRect.width - 8;
+    if (top + menuRect.height > window.innerHeight) top = window.innerHeight - menuRect.height - 8;
+    menu.style.left = left + 'px';
+    menu.style.top = top + 'px';
+
+    setTimeout(() => document.addEventListener('mousedown', handleStickyMenuOutsideClick), 0);
+  }
+
+  var gateLocked = true;
+
+  (function () {
+    const PASSWORD_HASH = 'ee77b3f594bba8fa1b1a8c13bc3bca032a4bb5f564fa08cd08dbb1b7f251620a';
+
+    const gate     = document.getElementById('gate');
+    const card     = document.getElementById('gate-card');
+    const input    = document.getElementById('gate-input');
+    const eyeBtn   = document.getElementById('gate-eye');
+    const submit   = document.getElementById('gate-submit');
+    const errorBox = document.getElementById('gate-error');
+    const errorMsg = errorBox.querySelector('span');
+
+    const lockedEls = ['topbar', 'tabstrip', 'layout', 'statusbar'].map(id => document.getElementById(id));
+    lockedEls.forEach(el => el.setAttribute('inert', ''));
+
+    function sha256Hex(str) {
+      const bytes = new TextEncoder().encode(str);
+      const K = [], H = [];
+      let n = 2, c = 0;
+      while (c < 64) {
+        let prime = true;
+        for (let i = 2; i * i <= n; i++) { if (n % i === 0) { prime = false; break; } }
+        if (prime) {
+          if (c < 8) H[c] = (Math.pow(n, 1 / 2) % 1) * 4294967296 | 0;
+          K[c] = (Math.pow(n, 1 / 3) % 1) * 4294967296 | 0;
+          c++;
+        }
+        n++;
+      }
+
+      const len = bytes.length;
+      const total = ((len + 9 + 63) >> 6) << 6;
+      const buf = new Uint8Array(total);
+      buf.set(bytes);
+      buf[len] = 0x80;
+      const dv = new DataView(buf.buffer);
+      dv.setUint32(total - 8, Math.floor(len * 8 / 4294967296));
+      dv.setUint32(total - 4, (len * 8) >>> 0);
+
+      let h = H.slice();
+      const w = new Array(64);
+      for (let off = 0; off < total; off += 64) {
+        for (let i = 0; i < 16; i++) w[i] = dv.getUint32(off + i * 4);
+        for (let i = 16; i < 64; i++) {
+          const x1 = w[i - 15], x2 = w[i - 2];
+          const s0 = ((x1 >>> 7) | (x1 << 25)) ^ ((x1 >>> 18) | (x1 << 14)) ^ (x1 >>> 3);
+          const s1 = ((x2 >>> 17) | (x2 << 15)) ^ ((x2 >>> 19) | (x2 << 13)) ^ (x2 >>> 10);
+          w[i] = (w[i - 16] + s0 + w[i - 7] + s1) | 0;
+        }
+        let a = h[0], b = h[1], cc = h[2], d = h[3], e = h[4], f = h[5], g = h[6], hh = h[7];
+        for (let i = 0; i < 64; i++) {
+          const S1 = ((e >>> 6) | (e << 26)) ^ ((e >>> 11) | (e << 21)) ^ ((e >>> 25) | (e << 7));
+          const ch = (e & f) ^ (~e & g);
+          const t1 = (hh + S1 + ch + K[i] + w[i]) | 0;
+          const S0 = ((a >>> 2) | (a << 30)) ^ ((a >>> 13) | (a << 19)) ^ ((a >>> 22) | (a << 10));
+          const maj = (a & b) ^ (a & cc) ^ (b & cc);
+          const t2 = (S0 + maj) | 0;
+          hh = g; g = f; f = e; e = (d + t1) | 0;
+          d = cc; cc = b; b = a; a = (t1 + t2) | 0;
+        }
+        h = [(h[0] + a) | 0, (h[1] + b) | 0, (h[2] + cc) | 0, (h[3] + d) | 0,
+             (h[4] + e) | 0, (h[5] + f) | 0, (h[6] + g) | 0, (h[7] + hh) | 0];
+      }
+      return h.map(x => (x >>> 0).toString(16).padStart(8, '0')).join('');
+    }
+    window.__sha256Hex = sha256Hex;
+
+    function unlock() {
+      if (!gateLocked) return;
+      gateLocked = false;
+      document.removeEventListener('keydown', onGateKey, true);
+      input.value = '';
+      lockedEls.forEach(el => el.removeAttribute('inert'));
+      gate.classList.add('leaving');
+      setTimeout(() => {
+        gate.classList.add('unlocked');
+        code.focus();
+      }, 280);
+    }
+
+    function fail() {
+      errorMsg.textContent = 'Incorrect password. Try again.';
+      errorBox.classList.add('show');
+      input.classList.add('bad');
+      card.classList.remove('shake');
+      void card.offsetWidth;
+      card.classList.add('shake');
+      input.value = '';
+      input.focus();
+    }
+
+    function attempt() {
+      if (!gateLocked) return;
+      const typed = input.value;
+      if (!typed) { fail(); return; }
+      if (sha256Hex(typed) === PASSWORD_HASH) unlock();
+      else fail();
+    }
+
+    input.addEventListener('input', () => {
+      errorBox.classList.remove('show');
+      input.classList.remove('bad');
+    });
+    card.addEventListener('animationend', () => card.classList.remove('shake'));
+
+    input.addEventListener('keydown', e => {
+      if (e.key === 'Enter') { e.preventDefault(); attempt(); }
+    });
+    submit.addEventListener('click', attempt);
+
+    eyeBtn.addEventListener('click', () => {
+      const show = input.type === 'password';
+      input.type = show ? 'text' : 'password';
+      eyeBtn.innerHTML = show ? '<i class="fa-regular fa-eye-slash"></i>' : '<i class="fa-regular fa-eye"></i>';
+      input.focus();
+    });
+
+    function onGateKey(e) {
+      if (!gateLocked) return;
+      const isL = e.code === 'KeyL' || (e.key && e.key.toLowerCase() === 'l');
+      if (e.ctrlKey && e.altKey && !e.shiftKey && !e.metaKey && isL) {
+        e.preventDefault();
+        e.stopPropagation();
+        unlock();
+      }
+    }
+    document.addEventListener('keydown', onGateKey, true);
+
+    document.addEventListener('focusin', e => {
+      if (gateLocked && !gate.contains(e.target)) input.focus();
+    });
+
+    window.addEventListener('load', () => { if (gateLocked) input.focus(); });
+    input.focus();
+  })();
+]]></script>
+</svg>
